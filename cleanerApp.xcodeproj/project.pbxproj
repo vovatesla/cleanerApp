@@ -28,6 +28,7 @@
 		C44F3AA82C7E276B001F5B7C /* SoundLevelChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44F3AA72C7E276B001F5B7C /* SoundLevelChart.swift */; };
 		C44F3AAA2C7E285A001F5B7C /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44F3AA92C7E285A001F5B7C /* RealmManager.swift */; };
 		C44F3AAF2C7E2D0F001F5B7C /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44F3AAE2C7E2D0F001F5B7C /* AudioManager.swift */; };
+		C4B9F8612C7F712600F51B5A /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B9F8602C7F712600F51B5A /* Color+Theme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -66,6 +67,7 @@
 		C44F3AA92C7E285A001F5B7C /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		C44F3AAE2C7E2D0F001F5B7C /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioManager.swift; path = cleanerApp/Utilities/AudioManager.swift; sourceTree = SOURCE_ROOT; };
 		C44F3AB02C7E2F04001F5B7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C4B9F8602C7F712600F51B5A /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +168,7 @@
 				C44F3AAE2C7E2D0F001F5B7C /* AudioManager.swift */,
 				C44F3AA42C7E25D9001F5B7C /* ProgressBar.swift */,
 				C44F3AA92C7E285A001F5B7C /* RealmManager.swift */,
+				C4B9F8602C7F712600F51B5A /* Color+Theme.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C44F3A9B2C7E2468001F5B7C /* TabPickerView.swift in Sources */,
+				C4B9F8612C7F712600F51B5A /* Color+Theme.swift in Sources */,
 				C44F3AA82C7E276B001F5B7C /* SoundLevelChart.swift in Sources */,
 				C44F3AAA2C7E285A001F5B7C /* RealmManager.swift in Sources */,
 				C44F3A8F2C7E23FE001F5B7C /* CleanerViewModel.swift in Sources */,

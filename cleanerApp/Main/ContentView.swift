@@ -69,7 +69,7 @@ struct ContentView: View {
                 }
         }
         .accentColor(.orange)
-        .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+        .background(Color.background)
         .onAppear {
             // Set tabSelection based on saved preferences if needed
             if let savedTabIndex = tabMapping[settingsViewModel.selectedTab] {

@@ -33,7 +33,7 @@ struct SettingsView: View {
                     Divider()
                         .background(Color.white.opacity(0.3))
                 }
-                .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+                .background(Color.background)
                 
                 // MARK: - List
                 List {
@@ -68,7 +68,7 @@ struct SettingsView: View {
                             }
                             .toggleStyle(SwitchToggleStyle(tint: .orange))
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                     
                     // MARK: - Community Section
                     Section(header: Text("Community")
@@ -100,7 +100,7 @@ struct SettingsView: View {
                                 }
                             }
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                     
                     // MARK: - Legal Section
                     Section(header: Text("Legal")
@@ -118,7 +118,7 @@ struct SettingsView: View {
                                 }
                             }
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                     
                     // MARK: - History Section
                     Section(header: Text("History")
@@ -134,21 +134,21 @@ struct SettingsView: View {
                             }) {
                                 Text("Clear History")
                                     .bold()
-                                    .foregroundColor(Color(red: 37/255, green: 31/255, blue: 69/255))
+                                    .foregroundColor(Color.buttonForeground)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.white)
+                                    .background(Color.buttonBackground)
                                     .cornerRadius(8)
                                     .scaleEffect(isButtonPressed ? 0.95 : 1.0)
                                     .animation(.easeOut(duration: 0.2), value: isButtonPressed)
                             }
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                 }
                 .listStyle(InsetGroupedListStyle())
                 .scrollContentBackground(.hidden)
             }
-            .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+            .background(Color.background)
         }
     }
 }

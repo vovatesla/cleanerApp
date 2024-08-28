@@ -29,7 +29,7 @@ struct CleanerView: View {
             Button(action: viewModel.toggleBlower) {
                 ZStack {
                     Circle()
-                        .fill(viewModel.isActive ? Color.orange : Color.blue)
+                        .fill(viewModel.isActive ? Color.accent : Color.blue)
                         .frame(width: 120, height: 120)
                     
                     Image(systemName: "power.circle.fill")
@@ -62,7 +62,7 @@ struct CleanerView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+        .background(Color.background)
         .foregroundColor(.white)
         .onDisappear {
             viewModel.stopBlower()

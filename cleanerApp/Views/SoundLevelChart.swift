@@ -47,7 +47,7 @@ struct SoundLevelChart: View {
                         x: .value("Time", dataPoint.x),
                         y: .value("Level", dataPoint.y)
                     )
-                    .foregroundStyle(Color.orange)
+                    .foregroundStyle(Color.chartLine)
                     .lineStyle(StrokeStyle(lineWidth: 2))
                 }
 
@@ -56,14 +56,14 @@ struct SoundLevelChart: View {
                         x: .value("Time", Double(values.firstIndex(of: maxValue) ?? 0)),
                         y: .value("Level", maxValue)
                     )
-                    .foregroundStyle(Color.red)
+                    .foregroundStyle(Color.maxValuePoint)
                     .symbolSize(10)
 
                     PointMark(
                         x: .value("Time", Double(values.firstIndex(of: minValue) ?? 0)),
                         y: .value("Level", minValue)
                     )
-                    .foregroundStyle(Color.blue)
+                    .foregroundStyle(Color.minValuePoint)
                     .symbolSize(10)
                 }
             }
@@ -81,16 +81,16 @@ struct SoundLevelChart: View {
 
                         Text("Max dB: \(String(format: "%.2f", maxValue))")
                             .font(.subheadline)
-                            .foregroundColor(.red)
+                            .foregroundColor(Color.maxValuePoint)
                         Text("Min dB: \(String(format: "%.2f", minValue))")
                             .font(.subheadline)
-                            .foregroundColor(.blue)
+                            .foregroundColor(Color.minValuePoint)
                         Text("Avg dB: \(String(format: "%.2f", avgValue))")
                             .font(.subheadline)
-                            .foregroundColor(.green)
+                            .foregroundColor(Color.avgValueText)
                         Text("Duration: \(String(format: "%.0f", duration)) seconds")
                             .font(.subheadline)
-                            .foregroundColor(.orange)
+                            .foregroundColor(Color.durationText)
                     }
                 }
                 Spacer()
