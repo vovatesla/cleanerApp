@@ -21,7 +21,7 @@ class RealmManager: ObservableObject {
         let realmConfig = Realm.Configuration(
             schemaVersion: 1,
             migrationBlock: { migration, oldSchemaVersion in
-                // Handle migrations if needed
+
             }
         )
         Realm.Configuration.defaultConfiguration = realmConfig
@@ -45,6 +45,21 @@ class RealmManager: ObservableObject {
 
     // MARK: - Methods
     
+    func addMeasurement(_ measurement: SoundMeasurement) {
+        do {
+            try realm.write {
+                realm.add(measurement)
+            }
+            print("Measurement added successfully")
+        } catch {
+            print("Error adding measurement: \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchMeasurements() -> Results<SoundMeasurement> {
+        return realm.objects(SoundMeasurement.self)
+    }
+
     func clearHistory() {
         do {
             try realm.write {

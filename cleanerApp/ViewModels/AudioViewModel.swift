@@ -10,18 +10,20 @@ import AVFoundation
 import RealmSwift
 
 class AudioViewModel: ObservableObject {
-    
+
     // MARK: - Properties
     
     private var realm: Realm
     private var audioRecorder: AVAudioRecorder?
     private var timer: Timer?
     private var audioPlayer: AVAudioPlayer?
-
+    
     @Published var isRecording = false
     @Published var currentLevel: Float = 0.0
     @Published var secondsRemaining = 0
     @Published var isWarningVisible = false
+
+    private var recordedLevels: [Float] = []
 
     // MARK: - Initializer
     
@@ -48,15 +50,7 @@ class AudioViewModel: ObservableObject {
 
     // MARK: - Recording Control
     
-    func toggleRecording() {
-        if isRecording {
-            stopRecording()
-        } else {
-            startRecording()
-        }
-    }
-
-    private func startRecording() {
+    func startRecording() {
         let settings = [
             AVFormatIDKey: Int(kAudioFormatAppleLossless),
             AVSampleRateKey: 44100,
@@ -72,16 +66,19 @@ class AudioViewModel: ObservableObject {
             audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
             isRecording = true
+            recordedLevels = []
             startTimer()
+            print("Recording started")
         } catch {
             print("Error starting recording: \(error)")
         }
     }
 
-    private func stopRecording() {
+    func stopRecording() {
         audioRecorder?.stop()
         isRecording = false
         stopTimer()
+        print("Recording stopped")
         saveMeasurement()
     }
 
@@ -91,6 +88,7 @@ class AudioViewModel: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             self.audioRecorder?.updateMeters()
             self.currentLevel = self.audioRecorder?.averagePower(forChannel: 0) ?? 0.0
+            self.recordedLevels.append(self.currentLevel) // Append the current level
         }
     }
 
@@ -104,7 +102,7 @@ class AudioViewModel: ObservableObject {
         let measurement = SoundMeasurement()
         measurement.date = Date()
         measurement.id = UUID().uuidString
-        measurement.values = try? JSONEncoder().encode([currentLevel]) // Сохранение текущего уровня
+        measurement.values = try? JSONEncoder().encode(recordedLevels)
 
         do {
             try realm.write {

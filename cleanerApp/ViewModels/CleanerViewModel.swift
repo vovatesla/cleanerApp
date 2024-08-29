@@ -44,25 +44,33 @@ class CleanerViewModel: ObservableObject {
     // MARK: - Blower Control
     
     func toggleBlower() {
-        if isActive {
-            stopBlower()
-        } else {
-            startBlower()
-        }
+        isActive ? stopBlower() : startBlower()
     }
 
     private func startBlower() {
+        guard !isActive else { return }
+
+        // Reset timer and state
         timer?.invalidate()
         timer = nil
-
         isActive = true
         secondsRemaining = 10
         isWarningVisible = false
 
-        audioPlayer?.currentTime = 0
-        audioPlayer?.play() // Запуск воспроизведения
+        // Prepare and play audio
+        if let player = audioPlayer {
+            if !player.isPlaying {
+                player.currentTime = 0
+                player.play()
+            }
+        } else {
+            setupAudioPlayer()
+            audioPlayer?.play()
+        }
 
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+        // Start countdown timer
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
             if self.secondsRemaining > 0 {
                 self.secondsRemaining -= 1
             } else {
@@ -72,13 +80,19 @@ class CleanerViewModel: ObservableObject {
     }
 
     func stopBlower() {
+        guard isActive else { return }
+
         isActive = false
 
+        // Stop audio and timer
         timer?.invalidate()
         timer = nil
 
-        audioPlayer?.stop() // Остановка воспроизведения
+        if let player = audioPlayer, player.isPlaying {
+            player.stop()
+        }
 
+        // Show warning animation
         withAnimation(.easeInOut(duration: 1.0)) {
             isWarningVisible = true
         }
@@ -89,4 +103,5 @@ class CleanerViewModel: ObservableObject {
         }
     }
 }
+
 

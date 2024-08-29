@@ -16,7 +16,6 @@ struct TabPickerView: View {
             VStack {
                 ScrollView {
                     VStack(spacing: 0) {
-                        // Iterate through the list of tabs and create a button for each
                         ForEach(["Audio", "History", "Cleaner", "Settings"], id: \.self) { tab in
                             tabOption(tab)
                         }
@@ -42,7 +41,6 @@ struct TabPickerView: View {
 
     // MARK: - Private Methods
 
-    /// Creates a button view for a tab option
     private func tabOption(_ tab: String) -> some View {
         Button(action: { selectTab(tab) }) {
             HStack {
@@ -62,13 +60,11 @@ struct TabPickerView: View {
         .padding(.vertical, 4)
     }
 
-    /// Updates the selected tab and dismisses the view
     private func selectTab(_ tab: String) {
         selectedTab = tab
         dismiss()
     }
 
-    /// Configures the appearance of the navigation bar
     private func configureNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()

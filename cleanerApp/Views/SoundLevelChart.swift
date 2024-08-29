@@ -26,7 +26,7 @@ struct SoundLevelChart: View {
     var body: some View {
         VStack(alignment: .leading) {
             // MARK: - Header
-            Text("Запись \(index + 1)")
+            Text("Recording \(index + 1)")
                 .font(.headline)
                 .padding(.bottom, 5)
 
@@ -47,7 +47,7 @@ struct SoundLevelChart: View {
                         x: .value("Time", dataPoint.x),
                         y: .value("Level", dataPoint.y)
                     )
-                    .foregroundStyle(Color.chartLine)
+                    .foregroundStyle(Color.orange)
                     .lineStyle(StrokeStyle(lineWidth: 2))
                 }
 
@@ -56,14 +56,14 @@ struct SoundLevelChart: View {
                         x: .value("Time", Double(values.firstIndex(of: maxValue) ?? 0)),
                         y: .value("Level", maxValue)
                     )
-                    .foregroundStyle(Color.maxValuePoint)
+                    .foregroundStyle(Color.red)
                     .symbolSize(10)
 
                     PointMark(
                         x: .value("Time", Double(values.firstIndex(of: minValue) ?? 0)),
                         y: .value("Level", minValue)
                     )
-                    .foregroundStyle(Color.minValuePoint)
+                    .foregroundStyle(Color.blue)
                     .symbolSize(10)
                 }
             }
@@ -81,16 +81,16 @@ struct SoundLevelChart: View {
 
                         Text("Max dB: \(String(format: "%.2f", maxValue))")
                             .font(.subheadline)
-                            .foregroundColor(Color.maxValuePoint)
+                            .foregroundColor(.red)
                         Text("Min dB: \(String(format: "%.2f", minValue))")
                             .font(.subheadline)
-                            .foregroundColor(Color.minValuePoint)
+                            .foregroundColor(.blue)
                         Text("Avg dB: \(String(format: "%.2f", avgValue))")
                             .font(.subheadline)
-                            .foregroundColor(Color.avgValueText)
+                            .foregroundColor(.green)
                         Text("Duration: \(String(format: "%.0f", duration)) seconds")
                             .font(.subheadline)
-                            .foregroundColor(Color.durationText)
+                            .foregroundColor(.orange)
                     }
                 }
                 Spacer()
@@ -104,6 +104,7 @@ struct SoundLevelChart: View {
         .padding(.horizontal)
     }
 }
+
 
 // MARK: - Preview
 

@@ -14,7 +14,7 @@ class SoundMeasurement: Object, Identifiable {
     
     @objc dynamic var id: String = UUID().uuidString
     @objc dynamic var date: Date = Date()
-    @objc dynamic var values: Data? // Используйте Data для хранения закодированных значений
+    @objc dynamic var values: Data?
 
     // MARK: - Primary Key
     
@@ -44,7 +44,6 @@ class SoundMeasurement: Object, Identifiable {
     }
     
     var duration: TimeInterval {
-        // Учитываем, что запись длится ровно 10 секунд
         return 10
     }
 }

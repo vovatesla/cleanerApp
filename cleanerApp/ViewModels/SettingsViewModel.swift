@@ -14,8 +14,8 @@ class SettingsViewModel: ObservableObject {
     // MARK: - Properties
     
     @AppStorage("isHapticsEnabled") var isHapticsEnabled: Bool = true
-    @AppStorage("selectedTab") var selectedTab: String = "Audio" // Default value or retrieve from user defaults
-
+    @AppStorage("selectedTab") var selectedTab: String = "Audio"
+    
     private var realmManager: RealmManager
 
     // MARK: - Initializer
@@ -27,11 +27,7 @@ class SettingsViewModel: ObservableObject {
     // MARK: - Methods
     
     func clearHistory() {
-        do {
-            realmManager.clearHistory() // Use clearHistory from realmManager directly
-            print("History cleared") // Ensure this line is executed
-        } catch {
-            print("Error clearing history in ViewModel: \(error.localizedDescription)")
-        }
+        realmManager.clearHistory()
+        print("History cleared")
     }
 }

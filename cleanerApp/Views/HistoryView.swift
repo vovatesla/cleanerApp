@@ -13,14 +13,8 @@ struct HistoryView: View {
     // MARK: - Properties
     
     @EnvironmentObject private var realmManager: RealmManager
-    @StateObject private var viewModel: HistoryViewModel
-
-    // MARK: - Initializer
+    @StateObject private var viewModel = HistoryViewModel()
     
-    init() {
-        _viewModel = StateObject(wrappedValue: HistoryViewModel(realm: RealmManager.shared.realm))
-    }
-
     // MARK: - Body
     
     var body: some View {
@@ -30,6 +24,9 @@ struct HistoryView: View {
         }
         .background(Color(red: 37/255, green: 31/255, blue: 69/255))
         .foregroundColor(.white)
+        .onAppear {
+            viewModel.setRealm(realmManager.realm)
+        }
     }
     
     // MARK: - Components

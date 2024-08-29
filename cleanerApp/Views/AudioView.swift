@@ -10,64 +10,72 @@ import RealmSwift
 import AVFoundation
 
 struct AudioView: View {
-    
+
     // MARK: - Properties
-    
+
     @EnvironmentObject private var realmManager: RealmManager
-    @StateObject private var audioManager: AudioManager
-    @State private var showSavedNotification = false
+    @EnvironmentObject private var bannerService: BannerService
+    @StateObject private var audioManager: AudioViewModel
 
     // MARK: - Initializer
-    
+
     init() {
-        // Инициализируем AudioManager с экземпляром Realm из RealmManager
-        _audioManager = StateObject(wrappedValue: AudioManager(realm: RealmManager.shared.realm))
+        _audioManager = StateObject(wrappedValue: AudioViewModel(realm: RealmManager.shared.realm))
     }
 
     // MARK: - Body
-    
+
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            content
-            notification
+        ZStack {
+            VStack(spacing: 0) {
+                header
+                Spacer()
+
+                content
+                    .padding(.top, 16)
+                    .padding(.bottom, 16)
+
+                Spacer()
+            }
+            .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+            .foregroundColor(.white)
+            .edgesIgnoringSafeArea(.bottom)
         }
         .onAppear {
             audioManager.requestMicrophoneAccess()
         }
         .onDisappear {
             if audioManager.isRecording {
-                audioManager.stopRecording(save: false)
+                audioManager.stopRecording()
             }
+            audioManager.currentLevel = 0
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 37/255, green: 31/255, blue: 69/255))
-        .foregroundColor(.white)
     }
-    
+
     // MARK: - Components
-    
+
     private var header: some View {
-        VStack {
+        VStack(spacing: 0) {
             Text("Audio")
                 .bold()
                 .font(.title2)
                 .foregroundColor(.white)
                 .padding(.top, 16)
                 .padding(.bottom, 8)
-
             Divider()
                 .background(Color.white.opacity(0.3))
         }
+        .padding(.horizontal)
     }
-    
+
     private var content: some View {
-        VStack {
+        VStack(spacing: 16) {
             Text("Any value around -120 dB can be considered silence or very quiet.\n\nValues closer to 0 dB would mean louder sounds, with 0 dB being the loudest level the microphone can capture without distortion.")
                 .font(.subheadline)
                 .multilineTextAlignment(.center)
-                .padding()
+                .padding(.horizontal)
                 .foregroundColor(.white)
+                .fixedSize(horizontal: false, vertical: true)
 
             SoundLevelRing(value: audioManager.currentLevel)
                 .frame(width: 200, height: 200)
@@ -75,27 +83,46 @@ struct AudioView: View {
 
             Text("Current Level: \(String(format: "%.0f", audioManager.currentLevel)) dB")
                 .font(.title3)
-                .padding()
 
-            if audioManager.isRecording {
-                recordingActions
-            } else {
+            ZStack {
                 startRecordingButton
+                    .opacity(audioManager.isRecording ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.3), value: audioManager.isRecording)
+
+                recordingActions
+                    .opacity(audioManager.isRecording ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: audioManager.isRecording)
             }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 16)
         }
-        .padding()
+        .padding(.horizontal)
     }
 
     private var recordingActions: some View {
         VStack(spacing: 16) {
-            RecordingActionButton(
-                action1: { audioManager.stopRecording(save: false) },
-                action2: {
-                    audioManager.stopRecording(save: true)
-                    withAnimation { showSavedNotification = true }
-                }
-            )
-            .padding()
+            Button(action: { audioManager.stopRecording() }) {
+                Text("Stop Recording")
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .frame(maxWidth: .infinity, minHeight: 50)
+                    .font(.headline)
+            }
+
+            Button(action: {
+                audioManager.stopRecording()
+                bannerService.setBanner(banner: .success(message: "Record saved successfully!"))
+            }) {
+                Text("Save")
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .frame(maxWidth: .infinity, minHeight: 50)
+                    .font(.headline)
+            }
         }
     }
 
@@ -112,58 +139,6 @@ struct AudioView: View {
                 .font(.headline)
         }
     }
-    
-    private var notification: some View {
-        Group {
-            if showSavedNotification {
-                SavedNotificationView()
-                    .transition(.slide)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            withAnimation {
-                                showSavedNotification = false
-                            }
-                        }
-                    }
-            }
-        }
-    }
-}
-
-// MARK: - RecordingActionButton
-
-struct RecordingActionButton: View {
-    var action1: () -> Void
-    var action2: () -> Void
-
-    var body: some View {
-        HStack(spacing: 16) {
-            Button(action: action1) {
-                Text("Stop Recording")
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .font(.headline)
-            }
-
-            Text("or")
-                .foregroundColor(.white)
-                .font(.headline)
-                .padding(.vertical, 8)
-
-            Button(action: action2) {
-                Text("Save")
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .font(.headline)
-            }
-        }
-    }
 }
 
 // MARK: - SoundLevelRing
@@ -171,14 +146,14 @@ struct RecordingActionButton: View {
 struct SoundLevelRing: View {
     @State private var isAnimating = false
     var value: Float
-    
+
     var body: some View {
         ZStack {
             Circle()
                 .stroke(lineWidth: 30)
                 .opacity(0.1)
                 .foregroundColor(Color.white)
-            
+
             Circle()
                 .trim(from: 0.0, to: isAnimating ? normalizedValue() : 0.0)
                 .stroke(style: StrokeStyle(lineWidth: 30, lineCap: .round))
@@ -193,27 +168,10 @@ struct SoundLevelRing: View {
             isAnimating = true
         }
     }
-    
+
     private func normalizedValue() -> CGFloat {
         let normalized = (value + 120) / 120
         return CGFloat(min(max(normalized, 0), 1))
-    }
-}
-
-// MARK: - SavedNotificationView
-
-struct SavedNotificationView: View {
-    var body: some View {
-        HStack {
-            Text("Saved to History")
-                .font(.headline)
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .center)
     }
 }
 
@@ -221,9 +179,10 @@ struct SavedNotificationView: View {
 
 struct AudioView_Previews: PreviewProvider {
     static var previews: some View {
-        let realmManager = RealmManager.createPreviewManager() // Используем менеджер для предварительного просмотра
+        let realmManager = RealmManager.createPreviewManager()
 
         return AudioView()
-            .environmentObject(realmManager) // Предоставляем RealmManager как объект окружения
+            .environmentObject(realmManager)
+            .environmentObject(BannerService())
     }
 }

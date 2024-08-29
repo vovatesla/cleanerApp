@@ -12,12 +12,18 @@ import RealmSwift
 struct CleanerApp: SwiftUI.App {
     @StateObject private var realmManager = RealmManager.shared
     @StateObject private var audioManager = AudioManager(realm: RealmManager.shared.realm)
+    @StateObject private var bannerService = BannerService()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(realmManager) 
+                .environmentObject(realmManager)
                 .environmentObject(audioManager)
+                .environmentObject(bannerService)
         }
     }
 }
+
+
+
+

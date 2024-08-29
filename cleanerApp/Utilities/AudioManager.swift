@@ -109,11 +109,14 @@ class AudioManager: ObservableObject {
         do {
             try realm.write {
                 realm.add(measurement)
+                print("Measurement saved: \(measurement)")
             }
         } catch {
             print("Failed to save measurement: \(error)")
         }
     }
+
+
     
     // MARK: - Microphone Access
     

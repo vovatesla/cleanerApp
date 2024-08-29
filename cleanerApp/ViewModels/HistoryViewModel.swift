@@ -5,54 +5,51 @@
 //  Created by Бадретдинов Владимир on 27.08.2024.
 //
 
-import SwiftUI
 import RealmSwift
+import Combine
+import SwiftUI
 
 class HistoryViewModel: ObservableObject {
     
     // MARK: - Properties
     
     @Published var measurements: [SoundMeasurement] = []
-    private var realm: Realm
-    private var notificationToken: NotificationToken?
-
+    private var realm: Realm?
+    private var token: NotificationToken?
+    
     // MARK: - Initializer
     
-    init(realm: Realm) {
+    init() {
+       
+    }
+
+    // MARK: - Methods
+    
+    func setRealm(_ realm: Realm) {
         self.realm = realm
-        loadMeasurements()
-        setupRealmNotification()
+        fetchMeasurements()
     }
 
-    // MARK: - Data Loading
-    
-    private func loadMeasurements() {
-        let results = realm.objects(SoundMeasurement.self)
-            .sorted(byKeyPath: "date", ascending: false)
-        measurements = Array(results)
-    }
-
-    // MARK: - Realm Notifications
-    
-    private func setupRealmNotification() {
-        let results = realm.objects(SoundMeasurement.self)
-            .sorted(byKeyPath: "date", ascending: false)
+    private func fetchMeasurements() {
+        guard let realm = realm else { return }
         
-        notificationToken = results.observe { [weak self] (changes: RealmCollectionChange) in
+        let measurementsResults = realm.objects(SoundMeasurement.self).sorted(byKeyPath: "date", ascending: false)
+        measurements = Array(measurementsResults)
+        
+        token = measurementsResults.observe { [weak self] changes in
             switch changes {
-            case .initial(let initialResults):
-                self?.measurements = Array(initialResults)
-            case .update(let updatedResults, _, _, _):
-                self?.measurements = Array(updatedResults)
+            case .initial(let results):
+                self?.measurements = Array(results)
+            case .update(let results, _, _, _):
+                self?.measurements = Array(results)
             case .error(let error):
-                print("Error observing Realm changes: \(error.localizedDescription)")
+                print("Error observing realm results: \(error.localizedDescription)")
             }
         }
     }
-    
-    // MARK: - Deinitialization
+
     
     deinit {
-        notificationToken?.invalidate()
+        token?.invalidate()
     }
 }
