@@ -15,12 +15,12 @@ struct AudioView: View {
 
     @EnvironmentObject private var realmManager: RealmManager
     @EnvironmentObject private var bannerService: BannerService
-    @StateObject private var audioManager: AudioViewModel
+    @StateObject private var audioManager: AudioManager
 
     // MARK: - Initializer
 
     init() {
-        _audioManager = StateObject(wrappedValue: AudioViewModel(realm: RealmManager.shared.realm))
+        _audioManager = StateObject(wrappedValue: AudioManager(realm: RealmManager.shared.realm))
     }
 
     // MARK: - Body
@@ -46,7 +46,7 @@ struct AudioView: View {
         }
         .onDisappear {
             if audioManager.isRecording {
-                audioManager.stopRecording()
+                audioManager.stopRecording(save: false)
             }
             audioManager.currentLevel = 0
         }
@@ -101,7 +101,7 @@ struct AudioView: View {
 
     private var recordingActions: some View {
         VStack(spacing: 16) {
-            Button(action: { audioManager.stopRecording() }) {
+            Button(action: { audioManager.stopRecording(save: false) }) {
                 Text("Stop Recording")
                     .padding()
                     .background(Color.red)
@@ -112,7 +112,7 @@ struct AudioView: View {
             }
 
             Button(action: {
-                audioManager.stopRecording()
+                audioManager.stopRecording(save: true)
                 bannerService.setBanner(banner: .success(message: "Record saved successfully!"))
             }) {
                 Text("Save")
@@ -186,3 +186,4 @@ struct AudioView_Previews: PreviewProvider {
             .environmentObject(BannerService())
     }
 }
+

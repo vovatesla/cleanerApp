@@ -22,7 +22,7 @@ struct TabPickerView: View {
                     }
                     .padding()
                 }
-                .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+                .background(Color.background)
             }
             .navigationTitle("Choose Tab")
             .onAppear {

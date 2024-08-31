@@ -10,24 +10,28 @@ import RealmSwift
 import UIKit
 
 class AudioManager: ObservableObject {
-    
+
     // MARK: - Properties
     
     private var audioRecorder: AVAudioRecorder?
     private var timer: Timer?
     private var realm: Realm
-    
+    private var audioPlayer: AVAudioPlayer?
+
     @Published var isRecording = false
     @Published var currentLevel: Float = 0.0
-    
+    @Published var secondsRemaining = 0
+    @Published var isWarningVisible = false
+
     private var recordedLevels = [Float]()
-    
+
     // MARK: - Initializer
     
     init(realm: Realm) {
         self.realm = realm
-        NotificationCenter.default.addObserver(self, selector: #selector(handleAppWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
         setupAudioSession()
+        setupAudioPlayer()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAppWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
     }
     
     // MARK: - Audio Session
@@ -41,8 +45,24 @@ class AudioManager: ObservableObject {
             print("Failed to setup audio session: \(error)")
         }
     }
+
+    // MARK: - Audio Player
     
-    // MARK: - Recording
+    private func setupAudioPlayer() {
+        guard let soundURL = Bundle.main.url(forResource: "sound", withExtension: "mp3") else {
+            print("Failed to find sound file.")
+            return
+        }
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+            audioPlayer?.prepareToPlay()
+        } catch {
+            print("Failed to initialize AVAudioPlayer: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Recording Control
     
     func startRecording() {
         let settings = [
@@ -68,12 +88,13 @@ class AudioManager: ObservableObject {
                 self.currentLevel = self.audioRecorder?.averagePower(forChannel: 0) ?? -120.0
                 self.startTimer()
             }
+            print("Recording started")
         } catch {
             print("Error starting recording: \(error)")
         }
     }
     
-    func stopRecording(save: Bool) {
+    func stopRecording(save: Bool = true) {
         audioRecorder?.stop()
         isRecording = false
         stopTimer()
@@ -81,8 +102,9 @@ class AudioManager: ObservableObject {
         if save {
             saveMeasurement()
         }
+        print("Recording stopped")
     }
-    
+
     // MARK: - Timer
     
     private func startTimer() {
@@ -97,7 +119,7 @@ class AudioManager: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
-    
+
     // MARK: - Saving Measurements
     
     private func saveMeasurement() {
@@ -116,8 +138,6 @@ class AudioManager: ObservableObject {
         }
     }
 
-
-    
     // MARK: - Microphone Access
     
     func requestMicrophoneAccess() {
@@ -129,7 +149,7 @@ class AudioManager: ObservableObject {
             }
         }
     }
-    
+
     // MARK: - Notifications
     
     @objc private func handleAppWillResignActive() {

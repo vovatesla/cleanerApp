@@ -34,7 +34,7 @@ struct SettingsView: View {
                     Divider()
                         .background(Color.white.opacity(0.3))
                 }
-                .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+                .background(Color.background)
                 
                 List {
                     Section(header: Text("Customisation")
@@ -54,8 +54,6 @@ struct SettingsView: View {
                             .sheet(isPresented: $showTabPicker) {
                                 TabPickerView(selectedTab: $viewModel.selectedTab)
                             }
-                            Divider()
-                                .background(Color.white)
                             
                             Toggle(isOn: $viewModel.isHapticsEnabled) {
                                 HStack {
@@ -67,7 +65,7 @@ struct SettingsView: View {
                             }
                             .toggleStyle(SwitchToggleStyle(tint: .orange))
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                     
                     Section(header: Text("Community")
                         .font(.subheadline)
@@ -92,7 +90,6 @@ struct SettingsView: View {
                                 }
                                 .ignoresSafeArea()
                             }
-                            Divider()
                             
                             Link(destination: URL(string: "mailto:support@example.com")!) {
                                 HStack {
@@ -106,7 +103,7 @@ struct SettingsView: View {
                                 }
                             }
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                     
                     Section(header: Text("Legal")
                         .font(.subheadline)
@@ -123,7 +120,7 @@ struct SettingsView: View {
                                 }
                             }
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                     
                     Section(header: Text("History")
                         .font(.subheadline)
@@ -135,7 +132,7 @@ struct SettingsView: View {
                             }) {
                                 Text("Clear History")
                                     .bold()
-                                    .foregroundColor(Color(red: 37/255, green: 31/255, blue: 69/255))
+                                    .foregroundColor(Color.background)
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(Color.white)
@@ -144,15 +141,16 @@ struct SettingsView: View {
                                     .animation(.easeOut(duration: 0.2), value: isButtonPressed)
                             }
                         }
-                        .listRowBackground(Color(red: 37/255, green: 31/255, blue: 69/255))
+                        .listRowBackground(Color.background)
                 }
                 .listStyle(InsetGroupedListStyle())
                 .scrollContentBackground(.hidden)
             }
-            .background(Color(red: 37/255, green: 31/255, blue: 69/255))
+            .background(Color.background)
         }
     }
 }
+
 
 // MARK: - PreviewProvider
 

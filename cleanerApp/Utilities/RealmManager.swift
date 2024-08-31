@@ -9,7 +9,7 @@ import RealmSwift
 import Combine
 
 class RealmManager: ObservableObject {
-    
+
     // MARK: - Properties
     
     static let shared = RealmManager()
